@@ -229,6 +229,7 @@ class Handle
 
                 self::sendToCurrentClient([
                     'code' => $resp->getStatusCode(),
+                    'data' => json_decode($resp->getBody()->getContents()),
                     'request_id' => $request_id
                 ]);
             }
