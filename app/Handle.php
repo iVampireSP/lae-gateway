@@ -94,16 +94,16 @@ class Handle
         
         if ($user->getStatusCode() !== 200 || empty($user)) {
             self::disconnectCurrentClient(self::$unauthorized);
-    
+            
             self::console('无法验证响应。');
             self::console("Status: {$user->getStatusCode()}");
-    
+            
             return;
         }
         
         if (!isset($user_response['id'])) {
             self::disconnectCurrentClient(self::$serverError);
-    
+            
             self::console('获取不到用户 ID。');
             self::console(json_encode($user_response));
             return;
@@ -151,12 +151,12 @@ class Handle
         }
         
         // 如果 message 中缺失了 method, module, path, data, 则结束
-        if (empty($message['method']) || empty($message['module_id']) || empty($message['path'] || !$message['request_id'])) {
+        if (empty($message['method']) || empty($message['module_id']) || !$message['request_id']) {
             self::sendToCurrentClient(self::$incomplete);
             return;
         }
         
-        $request_id = $message['request_id'] ?? null;
+        $request_id = $message['request_id'];
         
         if (empty($request_id)) {
             self::sendToCurrentClient(self::$incomplete);
@@ -226,7 +226,7 @@ class Handle
             },
             function (RequestException $e) use ($request_id) {
                 $resp = $e->getResponse();
-
+                
                 self::sendToCurrentClient([
                     'code' => $resp->getStatusCode(),
                     'data' => json_decode($resp->getBody()->getContents()),
