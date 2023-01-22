@@ -108,6 +108,14 @@ class Handle
             self::console(json_encode($user_response));
             return;
         }
+    
+        if (is_null($user_response['real_name_verified_at'])) {
+            self::disconnectCurrentClient(self::$unauthorized);
+        
+            self::console('用户没有完成实人认证。');
+            self::console(json_encode($user_response));
+            return;
+        }
         
         
         // 认证成功，绑定用户
